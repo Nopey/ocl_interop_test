@@ -1,0 +1,12 @@
+[package]
+name = "coop"
+version = "0.0.0"
+authors = ["Magnus Larsen <golgothasTerror101@gmail.com>"]
+
+[dependencies]
+#Graphics
+gl = "*"
+#Window creation
+sdl2 = "*"
+#Compute
+ocl="*"
