@@ -65,7 +65,7 @@ fn main() {
     //Create an OpenCL context with the GL interop enabled
     unsafe {
         let context = Context::builder()
-            .glx_display((glContext.raw() as *mut _))
+            .gl_context((glContext.raw() as *mut _))
             .build();
     }
     // Create a big ball of OpenCL-ness (see ProQue and ProQueBuilder docs for info):
