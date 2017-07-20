@@ -2,7 +2,7 @@ extern crate gl;
 extern crate sdl2;
 extern crate ocl;
 
-use ocl::{util, ProQue, Buffer, MemFlags};
+use ocl::{util, ProQue, Buffer, MemFlags, Context};
 use gl::types::*;
 
 use sdl2::event::Event;
@@ -54,6 +54,7 @@ fn main() {
         .index(find_sdl_gl_driver().unwrap())
         .build()
         .expect("AHHHH");
+    let glContext = canvas.window().gl_create_context().unwrap();
 
     gl::load_with(|name| video_subsystem.gl_get_proc_address(name) as *const _);
     canvas.window().gl_set_context_to_current();
@@ -62,7 +63,11 @@ fn main() {
         gl::ClearColor(0.0, 0.5, 1.0, 1.0);
     }
     //Create an OpenCL context with the GL interop enabled
-    //let context = Context::builder().gl_context(context);
+    unsafe {
+        let context = Context::builder()
+            .glx_display((glContext.raw() as *mut _))
+            .build();
+    }
     // Create a big ball of OpenCL-ness (see ProQue and ProQueBuilder docs for info):
     let ocl_pq = ProQue::builder()
         .src(KERNEL_SRC)
@@ -132,6 +137,7 @@ fn main() {
             unsafe {
                 gl::Clear(gl::COLOR_BUFFER_BIT);
             }
+
             canvas.present();
 
             if nextFrameTime > Instant::now() {

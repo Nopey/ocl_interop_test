@@ -9,4 +9,4 @@ gl = "*"
 #Window creation
 sdl2 = "*"
 #Compute
-ocl="*"
+ocl={git = "https://github.com/cogciprocate/ocl.git" }
