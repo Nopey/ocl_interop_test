@@ -1,9 +1,12 @@
 extern crate gl;
 extern crate sdl2;
 extern crate ocl;
+extern crate ocl_interop;
 
 use ocl::{util, ProQue, Buffer, MemFlags, Context};
+use ocl_interop::get_properties_list;
 use gl::types::*;
+
 
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
@@ -63,13 +66,13 @@ fn main() {
         gl::ClearColor(0.0, 0.5, 1.0, 1.0);
     }
     //Create an OpenCL context with the GL interop enabled
-    unsafe {
-        let context = Context::builder()
-            .gl_context((glContext.raw() as *mut _))
-            .build();
-    }
+    let mut context = Context::builder()
+        .properties(get_properties_list())
+        .build()
+        .unwrap();
     // Create a big ball of OpenCL-ness (see ProQue and ProQueBuilder docs for info):
     let ocl_pq = ProQue::builder()
+        .context(context)
         .src(KERNEL_SRC)
         .dims(DATA_SET_SIZE)
         .build()
